@@ -67,12 +67,13 @@ export default function App() {
 
         <h4>Filter by Genre</h4>
         <select onChange={handleFilter} className="filter-form">
-          <option value="reset">All Movies</option>
-          <option value="action">Action</option>
-          <option value="fantasy">Fantasy</option>
-          <option value="horror">Horror</option>
-          <option value="drama">Drama</option>
-          <option value="suspense">Suspense</option>
+          <option value="Reset">All Movies</option>
+          <option value="Action">Action</option>
+          <option value="Fantasy">Fantasy</option>
+          <option value="Horror">Horror</option>
+          <option value="Drama">Drama</option>
+          <option value="Suspense">Suspense</option>
+          <option value="Comedy">Comedy</option>
         </select>
 
         {movies.map(movie => (

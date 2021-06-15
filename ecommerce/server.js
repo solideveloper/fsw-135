@@ -19,6 +19,9 @@ mongoose.connect(
   () => console.log("Connected to database")
 );
 
+// Routes //
+app.use("/inventory", require('./routes/storeRouter.js'))
+
 //Error Handler
 app.use((err, req, res, next) => {
   console.log(err);
