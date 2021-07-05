@@ -14,12 +14,10 @@ const userSchema = new Schema({
   },
   memberSince: {
     type: Date,
+    required: true,
     default: Date.now
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
   }
 })
+
 
 module.exports = mongoose.model("User", userSchema)
