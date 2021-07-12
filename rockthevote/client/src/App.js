@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
-import './app.css';
 import Auth from './components/Auth'
 import { UserContext } from './context/UserProvider'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Issue from './components/IssueForm'
 import Profile from './components/Profile'
-import AuthorizedRoute from './components/AuthorizedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
+import Public from './components/Public'
+import './style.css'
 
 
 function App() {
@@ -19,21 +19,19 @@ function App() {
           exact path='/'
           render={() => token ? <Redirect to='/profile' /> : <Auth />}
         />
-        <AuthorizedRoute
+        <ProtectedRoute
           path='/profile'
           component={Profile}
           redirectTo="/"
           token={token}
         />
-       
-         <AuthorizedRoute
-          path='/issue'
-          component={Issue}
+        <ProtectedRoute 
+          path="/public"
+          component={Public}
           redirectTo="/"
           token={token}
         />
-        
-        
+       
       </Switch>
 
     </div>

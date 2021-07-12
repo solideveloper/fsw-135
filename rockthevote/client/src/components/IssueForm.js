@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 
-
 const initInputs = {
-  issueScript: "",
+  title: "",
+  description: "",
   imgUrl: ""
 }
 
 export default function IssueForm(props){
   const [inputs, setInputs] = useState(initInputs)
   const { addIssue } = props
-  
+
   function handleChange(e){
     const {name, value} = e.target
     setInputs(prevInputs => ({
@@ -24,24 +24,30 @@ export default function IssueForm(props){
     setInputs(initInputs)
   }
 
-  const { issueScript, imgUrl } = inputs
+  const { title, description, imgUrl } = inputs
   return (
+    <div className = "auth-container">
     <form onSubmit={handleSubmit}>
       <input 
         type="text" 
-        name="issueScript" 
-        value={issueScript} 
+        name="title" 
+        value={title} 
         onChange={handleChange} 
-        placeholder="issueScript"/>
-
+        placeholder="Title"/>
+      <input 
+        type="text" 
+        name="description" 
+        value={description} 
+        onChange={handleChange} 
+        placeholder="Description"/>
       <input 
         type="text" 
         name="imgUrl" 
         value={imgUrl} 
         onChange={handleChange} 
-        placeholder="Image URL"/>
-      
+        placeholder="Image Url"/>
       <button>Add Issue</button>
     </form>
+    </div>
   )
 }

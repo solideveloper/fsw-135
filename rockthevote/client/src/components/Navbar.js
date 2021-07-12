@@ -7,11 +7,9 @@ export default function Navbar(){
   const { logout, token } = useContext(UserContext)
   return (
     <div className = "navbar">
-   
-    {token && <Link to='/profile'>Profile</Link>}
-    {token &&<Link to='/issue'>Issues</Link>}
-   
-    {token && <button onClick = {logout}>Logout</button>}
-  </div>
+      {token && <Link to='/profile'>Profile</Link>}
+      <Link to='/public'>Public</Link>
+      {token && <button onClick = {logout}>Logout</button>}
+    </div>
   )
 }

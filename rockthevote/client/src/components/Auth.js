@@ -40,17 +40,6 @@ export default function Auth(){
         <>
         <AuthForm 
             handleChange={handleChange}
-            handleSubmit={handleSignup}
-            inputs={inputs}
-            btnText="Sign Up"
-            errMsg={errMsg}
-          />
-          <button onClick={() => toggleForm()}>Already a member?</button>
-        </>
-      :
-        <>
-        <AuthForm 
-            handleChange={handleChange}
             handleSubmit={handleLogin}
             inputs={inputs}
             btnText="Login"
@@ -58,6 +47,19 @@ export default function Auth(){
           />
           <button onClick={() => toggleForm()}>Not a member?</button>
         </>
+        :
+        <>
+        <AuthForm 
+            handleChange={handleChange}
+            handleSubmit={handleSignup}
+            inputs={inputs}
+            btnText="Sign Up"
+            errMsg={errMsg}
+          />
+          <button onClick={() => toggleForm()}>Already a member?</button>
+        </>
+     
+      
       }
     </div>
   )

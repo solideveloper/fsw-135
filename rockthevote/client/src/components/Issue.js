@@ -1,56 +1,59 @@
-import React, { useState} from 'react'
+import React, { useContext, useState } from 'react'
+import Comment from '../components/Comment'
+import {UserContext} from '../context/UserProvider'
+import CommentForm from '../components/CommentForm'
 
-import IssueForm from './IssueForm'
-
-
-const initInputs = {
-  issueScript: "",
-  imgUrl: ""
-}
-
-export default function Issue(props){
-  const [inputs, setInputs] = useState(initInputs)
-  const { addIssue} = props
+export default function Issue (props) {
+  const [pComment, setPComment] = useState(false)
+  const [displayComments, setDisplayComments] = useState(false)
   
-  function handleChange(e){
-    const {name, value} = e.target
-    setInputs(prevInputs => ({
-      ...prevInputs,
-      [name]: value
-    }))
+  const {username, getCommentsForIssue, issueComments, getUserName, addLike, addDislike, getUserIssues} = useContext(UserContext)
+  const { topic, _id, imgUrl, postDate, likes, dislikes } = props
+  function togglePComment () {
+    setPComment(prevState => !prevState)
   }
 
-  function handleSubmit(e){
-    e.preventDefault()
-    addIssue(inputs)
-    setInputs(initInputs)
+  function toggleDispComments () {
+    setDisplayComments(prevState => !prevState)
+    if(!displayComments){
+      getCommentsForIssue(_id)
+    }
   }
 
-  const { issueScript, imgUrl } = inputs
+  function addALike (event) {
+    addLike(event)
+    getUserIssues()
+  }
+
+  function addADislike (event){
+    addDislike(event)
+    getUserIssues()
+  }
+
   return (
-    <div>
+    <div id={_id} key={_id} className = 'issue'>
 
+      <h1>{topic}</h1>
 
+      <img src={imgUrl} width="350" height="300" alt="thisisapicture"/><br/>
+
+      <p>Posted By: @{username}</p>
+      <p><strong>Likes:</strong> {likes} <strong>Dislikes:</strong> {dislikes}</p><br/>
+      <p>Post Date: {Date(postDate)}</p>
       
-      <IssueForm addIssue={ addIssue }/>
 
-    <form onSubmit={handleSubmit}>
-      <input 
-        type="text" 
-        name="issueScript" 
-        value={issueScript} 
-        onChange={handleChange} 
-        placeholder="issueScript"/>
+      {displayComments ?
+      issueComments.map(comment => <Comment {...comment} key={comment._id} getUserName = {getUserName}/>) : 
+      <button onClick={toggleDispComments}>View Comments</button>}
 
-      <input 
-        type="text" 
-        name="imgUrl" 
-        value={imgUrl} 
-        onChange={handleChange} 
-        placeholder="Image URL"/>
+      {displayComments ? <button onClick={toggleDispComments}>Hide Comments</button> : ""}
+
+      {pComment ? <CommentForm togglePComment = {togglePComment}/> : <button onClick={togglePComment}>Post a Comment</button>}
+      {!displayComments ? <button onClick={addALike}>Like</button> : "" }
+      {!displayComments ? <button onClick={addADislike}>Dislike</button> : ""}
       
-      <button>Add Issue</button>
-    </form>
+      
+
     </div>
   )
 }

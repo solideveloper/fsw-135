@@ -3,7 +3,8 @@ const commentRouter = express.Router()
 const Comment = require('../models/comment')
 
 //Get All By Issue Id
-commentRouter.get('/issues/:issueId', (req, res, next) => {
+commentRouter
+  .get('/issues/:issueId', (req, res, next) => {
   Comment.find({issueId: req.params.issueId}, (err, comment) => {
     if(err){
       res.status(500)
@@ -14,7 +15,7 @@ commentRouter.get('/issues/:issueId', (req, res, next) => {
 })
 
 //Get All By User
-commentRouter.get('/user/:userId', (req, res, next) => {
+  .get('/user/:userId', (req, res, next) => {
     Comment.find({user: req.params.userId}, (err, comment)=> {
       if(err){
         res.status(500)
@@ -25,7 +26,7 @@ commentRouter.get('/user/:userId', (req, res, next) => {
 })
 
 //Get All
-commentRouter.get('/', (req, res, next) => {
+  .get('/', (req, res, next) => {
   Comment.find( (err, comment) => {
     if(err){
       res.status(500)
@@ -37,7 +38,7 @@ commentRouter.get('/', (req, res, next) => {
 
 //Post
 
-commentRouter.post('/', (req, res, next)=> {
+  .post('/', (req, res, next)=> {
   req.body.user = req.user._id
   req.body.username = req.user.username
   const newComment = new Comment(req.body)
@@ -51,7 +52,7 @@ commentRouter.post('/', (req, res, next)=> {
 })
 
 //Add Like
-commentRouter.put('/likes/:commentId', (req, res, next) => {
+  .put('/likes/:commentId', (req, res, next) => {
   Comment.findOneAndUpdate(
     {_id: req.params.commentId},
     {$inc: {likes: 1}},
@@ -67,7 +68,7 @@ commentRouter.put('/likes/:commentId', (req, res, next) => {
 })
 
 //Add dislike
-commentRouter.put('/dislikes/:commentId', (req, res, next) => {
+  .put('/dislikes/:commentId', (req, res, next) => {
   Comment.findOneAndUpdate(
     {_id: req.params.commentId},
     {$inc: {dislikes: 1}},
@@ -83,7 +84,7 @@ commentRouter.put('/dislikes/:commentId', (req, res, next) => {
 })
 
 //Delete
-commentRouter.delete('/:commentId', (req, res, next)=> {
+  .delete('/:commentId', (req, res, next)=> {
   Comment.findOneAndDelete(
     {_id: req.params.commentId},
     (err, deletedItem)=>{
@@ -91,7 +92,7 @@ commentRouter.delete('/:commentId', (req, res, next)=> {
         res.status(500)
         return next(err)
       }
-      return res.status(200).send(`Successfully deleted comment from the database.`)
+      return res.status(200).send(`Successfully deleted comment from database.`)
     }
   )
 })
