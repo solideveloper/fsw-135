@@ -4,11 +4,11 @@ import { UserContext } from '../context/UserProvider'
 const initInputs = {
   comment: ""
 }
-export default function CommentForm(props) {
+const CommentForm = (props) => {
   const [inputs, setInputs] = useState(initInputs)
-  const { postComment } = useContext(UserContext)
+  const { createComment } = useContext(UserContext)
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target
     setInputs(prevInputs => ({
       ...prevInputs,
@@ -16,11 +16,11 @@ export default function CommentForm(props) {
     }))
   }
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    postComment(event, inputs)
+    createComment(event, inputs)
     setInputs(initInputs)
-    props.togglePComment()
+    props.toggleComment()
   }
 
   const { comment } = inputs
@@ -28,14 +28,17 @@ export default function CommentForm(props) {
     <div>
       <form onSubmit={handleSubmit}>
         <input
+          type="text"
           name="comment"
           value={comment}
-          placeholder="New Comment"
+          placeholder="Add Comment"
           onChange={handleChange} />
-
-        <button>Post!</button>
+      <span><button className="bform">Submit</button></span>
+      <span><button onClick={props.toggleComment} className="bform">Cancel</button></span>
       </form>
-      <button onClick={props.togglePComment}>Cancel</button>
+      
     </div>
   )
 }
+
+export default CommentForm;

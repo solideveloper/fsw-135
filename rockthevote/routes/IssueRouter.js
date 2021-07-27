@@ -69,11 +69,11 @@ issueRouter
   })
 })
 
-//Add Like
-  .put('/likes/:issueId', (req, res, next) => {
+//Add Upvote
+  .put('/upvotes/:issueId', (req, res, next) => {
   Issue.findOneAndUpdate(
     {_id: req.params.issueId},
-    {$inc: {likes: 1}},
+    {$inc: {upvotes: 1}},
     {new: true},
     (err, updatedIssue) => {
       if(err){
@@ -85,11 +85,11 @@ issueRouter
   )
 })
 
-//Add Dislike
-  .put('/dislikes/:issueId', (req, res, next) => {
+//Add Downvote
+  .put('/downvotes/:issueId', (req, res, next) => {
   Issue.findOneAndUpdate(
     {_id: req.params.issueId},
-    {$inc: {dislikes: 1}},
+    {$inc: {downvotes: 1}},
     {new: true},
     (err, updatedIssue) => {
       if(err){

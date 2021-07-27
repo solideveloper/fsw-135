@@ -17,7 +17,6 @@ export default function UserProvider(props) {
     issues: [],
     userComments: [],
     issueComments: [],
-
     userIssues: [],
     username: "",
     errMsg: "",
@@ -25,21 +24,22 @@ export default function UserProvider(props) {
 
   const [userState, setUserState] = useState(initState);
 
-  function handleAuthErr(errMsg) {
+  const handleAuthErr = (errMsg) => {
     setUserState((prevState) => ({
       ...prevState,
       errMsg,
     }));
   }
 
-  function resetAuthErr() {
+  const resetAuthErr = () => {
     setUserState((prevState) => ({
       ...prevState,
       errMsg: "",
     }));
   }
 
-  function signup(credentials) {
+// Signup
+  const signup = (credentials) => {
     axios
       .post("/auth/signup", credentials)
       .then((res) => {
@@ -52,27 +52,29 @@ export default function UserProvider(props) {
           token,
         }));
       })
-      .catch (err => handleAuthErr(err.response.data.errMsg));
+      .catch((err) => handleAuthErr(err.response.data.errMsg));
   }
 
-  function login(credentials) {
+// Login
+  const login = (credentials) => {
     axios
       .post("/auth/login", credentials)
       .then((res) => {
         const { user, token } = res.data;
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-        getUserIssues();
+        getIssuesByUser();
         setUserState((prevUserState) => ({
           ...prevUserState,
           user,
           token,
         }));
       })
-      .catch (err => handleAuthErr(err.response.data.errMsg));
+      .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function logout() {
+// Logout
+  const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUserState({
@@ -82,9 +84,10 @@ export default function UserProvider(props) {
     });
   }
 
-  function addIssue(newIssue) {
+// POST Issue
+  const createIssue = (newIssue) => {
     userAxios
-      .post("/api/issues/", newIssue)
+      .post(`/api/issues/`, newIssue)
       .then((res) => {
         setUserState((prevState) => ({
           ...prevState,
@@ -94,11 +97,22 @@ export default function UserProvider(props) {
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function getUserIssues() {
+  // POST Comment
+  const createComment = (event, newComment) => {
+    const par = event.target.parentNode;
+    const id = par.parentNode.id;
+    newComment.issueId = id;
+    userAxios
+      .post(`/api/comments`, newComment)
+      .then((res) => console.log(`Comment added to Database`))
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+// GET
+  const getIssuesByUser = () => {
     userAxios
       .get("/api/issues")
       .then((res) => {
-        //assigns res.data to issues to populate context
         setUserState((prevState) => ({
           ...prevState,
           issues: res.data,
@@ -106,53 +120,8 @@ export default function UserProvider(props) {
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
-  function getCommentsForUser() {
-    userAxios
-      .get(`/api/comments/user/${userState.user._id}`) //grabs users id from user in context
-      .then((res) => {
-        setUserState((prevState) => ({
-          ...prevState,
-          userComments: res.data,
-        }));
-      })
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
 
-  function getCommentsForIssue(_id) {
-    userAxios
-      .get(`api/comments/issues/${_id}`)
-
-      .then((res) => {
-        setUserState((prevState) => ({
-          ...prevState,
-          issueComments: res.data,
-        }));
-        console.log(userState.issueComments);
-      })
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
-
-  function postComment(event, newComment) {
-    const par = event.target.parentNode;
-    const id = par.parentNode.id;
-    newComment.issueId = id;
-    userAxios
-      .post(`/api/comments`, newComment)
-      .then((res) => console.log(`Added to DB`))
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
-
-  function getUserName(id) {
-    userAxios.get(`/api/user/${id}`).then((res) => {
-      const newUserName = res.data;
-      setUserState((prevState) => ({
-        ...prevState,
-        username: newUserName,
-      }));
-    });
-  }
-
-  function getIssuesForUser() {
+  const getUserIssues = () => {
     userAxios
       .get(`/api/issues`)
       .then((res) => {
@@ -165,62 +134,120 @@ export default function UserProvider(props) {
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function deleteComment(id) {
+  const getUserComments = () => {
+    userAxios
+      .get(`/api/comments/user/${userState.user._id}`) 
+      .then((res) => {
+        setUserState((prevState) => ({
+          ...prevState,
+          userComments: res.data,
+        }));
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+  const getIssueComments = (_id) => {
+    userAxios
+      .get(`api/comments/issues/${_id}`)
+      .then((res) => {
+        setUserState((prevState) => ({
+          ...prevState,
+          issueComments: res.data,
+        }));
+        console.log(userState.issueComments);
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+  const getUsername = (id) => {
+    userAxios.get(`/api/user/${id}`).then((res) => {
+      const newUserName = res.data;
+      setUserState((prevState) => ({
+        ...prevState,
+        username: newUserName,
+      }));
+    });
+  }
+
+//Edit 
+const editComment = (id) => {
+  userAxios.put(`/api/comments/${id}`)
+  .then(res => {
+      setUserState(res.data);
+  })
+  .catch(err => {
+      handleAuthErr(err);
+  })
+}
+
+const editIssue = (id) => {
+  userAxios.put(`/api/issues/${id}`)
+  .then(res => {
+      setUserState(res.data);
+  })
+  .catch(err => {
+      handleAuthErr(err);
+  })
+}
+
+// DELETE
+  const deleteComment = (id) => {
     userAxios
       .delete(`/api/comments/${id}`)
       .then((res) => {
-        getCommentsForUser();
+        getUserComments();
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function deleteIssue(id) {
+  const deleteIssue = (id) => {
     userAxios
       .delete(`/api/issues/${id}`)
       .then((res) => {
-        getIssuesForUser();
+        getUserIssues();
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function addLike(event) {
+// ADD Upvote or DownVote to Issues and Comments
+  const addUpvote = (event) => {
     const btnPar = event.target.parentNode;
     const id = btnPar.id;
     userAxios
-      .put(`/api/issues/likes/${id}`)
+      .put(`/api/issues/upvotes/${id}`)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function addDislike(event) {
+  const addCommentUpvote = (event) => {
     const btnPar = event.target.parentNode;
     const id = btnPar.id;
     userAxios
-      .put(`/api/issues/dislikes/${id}`)
+      .put(`/api/comments/upvotes/${id}`)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function addCommentLike(event) {
+  const addDownvote = (event) => {
     const btnPar = event.target.parentNode;
     const id = btnPar.id;
     userAxios
-      .put(`/api/comments/likes/${id}`)
+      .put(`/api/issues/downvotes/${id}`)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  function addCommentDislike(event) {
+  const addCommentDownvote = (event) => {
     const btnPar = event.target.parentNode;
     const id = btnPar.id;
     userAxios
-      .put(`/api/comments/dislikes/${id}`)
+      .put(`/api/comments/downvotes/${id}`)
       .then((res) => {
         console.log(res);
       })
@@ -234,20 +261,22 @@ export default function UserProvider(props) {
         signup,
         login,
         logout,
-        addIssue,
-        getCommentsForUser,
-        getCommentsForIssue,
-        postComment,
-        getUserIssues,
-        getUserName,
+        createIssue,
+        getUserComments,
+        getIssueComments,
+        createComment,
+        getIssuesByUser,
+        getUsername,
         resetAuthErr,
-        getIssuesForUser,
+        getUserIssues,
+        editComment,
+        editIssue,
         deleteComment,
         deleteIssue,
-        addLike,
-        addDislike,
-        addCommentLike,
-        addCommentDislike,
+        addUpvote,
+        addDownvote,
+        addCommentUpvote,
+        addCommentDownvote,
       }}
     >
       {props.children}

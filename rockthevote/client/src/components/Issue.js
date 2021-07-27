@@ -1,59 +1,94 @@
 import React, { useContext, useState } from 'react'
-import Comment from '../components/Comment'
+import Comment from './Comment'
 import {UserContext} from '../context/UserProvider'
-import CommentForm from '../components/CommentForm'
+import CommentForm from './CommentForm'
 
-export default function Issue (props) {
-  const [pComment, setPComment] = useState(false)
-  const [displayComments, setDisplayComments] = useState(false)
+const Issue = (props) => {
+  const [setsComments, setComment] = useState(false)
+  const [showComments, setShowComments] = useState(false)
   
-  const {username, getCommentsForIssue, issueComments, getUserName, addLike, addDislike, getUserIssues} = useContext(UserContext)
-  const { topic, _id, imgUrl, postDate, likes, dislikes } = props
-  function togglePComment () {
-    setPComment(prevState => !prevState)
+  const {
+    user: 
+    { username }, 
+    getIssueComments, 
+    issueComments, 
+    getUsername, 
+    addUpvote, 
+    addDownvote, 
+    getIssuesByUser
+  } = useContext(UserContext)
+  
+  const { 
+    title, 
+    details, 
+    imgUrl, 
+    _id 
+  } = props
+  
+  
+  const toggleComment =  () => {
+    setComment(prevState => !prevState)
   }
 
-  function toggleDispComments () {
-    setDisplayComments(prevState => !prevState)
-    if(!displayComments){
-      getCommentsForIssue(_id)
+  const allComments = () => {
+    setShowComments(prevState => !prevState)
+    if(!showComments){
+    getIssueComments(_id)
     }
   }
 
-  function addALike (event) {
-    addLike(event)
-    getUserIssues()
+  const addAnUpvote = (event) => {
+    addUpvote(event)
+    getIssuesByUser()
+    event.preventDefault()
+    
   }
 
-  function addADislike (event){
-    addDislike(event)
-    getUserIssues()
+  const addADownvote = (event) => {
+    addDownvote(event)
+    getIssuesByUser()
+    event.preventDefault()
   }
 
   return (
     <div id={_id} key={_id} className = 'issue'>
 
-      <h1>{topic}</h1>
+      <h3 className="title">{title}</h3>
+      <img src={imgUrl}alt="issueIMG" className="img"/>
+      <p>{details}</p>
+      <span><em>Posted By: @{username}</em></span>
+      <br />
+      <span>Upvotes: {props.upvotes}</span>
+      <br/>
+      <span>Downvotes: {props.downvotes}</span>
+      <br/>
 
-      <img src={imgUrl} width="350" height="300" alt="thisisapicture"/><br/>
-
-      <p>Posted By: @{username}</p>
-      <p><strong>Likes:</strong> {likes} <strong>Dislikes:</strong> {dislikes}</p><br/>
-      <p>Post Date: {Date(postDate)}</p>
-      
-
-      {displayComments ?
-      issueComments.map(comment => <Comment {...comment} key={comment._id} getUserName = {getUserName}/>) : 
-      <button onClick={toggleDispComments}>View Comments</button>}
-
-      {displayComments ? <button onClick={toggleDispComments}>Hide Comments</button> : ""}
-
-      {pComment ? <CommentForm togglePComment = {togglePComment}/> : <button onClick={togglePComment}>Post a Comment</button>}
-      {!displayComments ? <button onClick={addALike}>Like</button> : "" }
-      {!displayComments ? <button onClick={addADislike}>Dislike</button> : ""}
-      
-      
-
+      {showComments ?
+      issueComments.map(comment => 
+        <Comment {...comment} 
+          key={comment._id} 
+          getUsername = {getUsername}
+        />) 
+      : 
+      <button className="bform" onClick={allComments}>View Comments</button>}
+      {showComments 
+      ? 
+      <button className="bform" onClick={allComments}>Hide Comments</button> : ""}
+      {setsComments ? 
+        <CommentForm 
+          toggleComment = {toggleComment}
+        /> 
+      : 
+      <button className="bform" onClick={toggleComment}>Post a Comment</button>}
+      {!showComments 
+      ? 
+      <button className="bform" onClick={addAnUpvote}>Upvote</button> : "" }
+      {!showComments ? 
+      <button className="bform" onClick={addADownvote}>Downvote</button> : ""}
+      <br/>
     </div>
+ 
   )
 }
+
+export default Issue;

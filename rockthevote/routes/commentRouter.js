@@ -51,11 +51,11 @@ commentRouter
   })
 })
 
-//Add Like
-  .put('/likes/:commentId', (req, res, next) => {
+//Add Upvote
+  .put('/upvotes/:commentId', (req, res, next) => {
   Comment.findOneAndUpdate(
     {_id: req.params.commentId},
-    {$inc: {likes: 1}},
+    {$inc: {upvotes: 1}},
     {new: true},
     (err, updatedComment) => {
       if(err){
@@ -67,11 +67,11 @@ commentRouter
   )
 })
 
-//Add dislike
-  .put('/dislikes/:commentId', (req, res, next) => {
+//Add Downvote
+  .put('/downvotes/:commentId', (req, res, next) => {
   Comment.findOneAndUpdate(
     {_id: req.params.commentId},
-    {$inc: {dislikes: 1}},
+    {$inc: {downvotes: 1}},
     {new: true},
     (err, updatedComment) => {
       if(err){
@@ -80,6 +80,22 @@ commentRouter
       }
       return res.status(200).send(updatedComment)
     }
+  )
+})
+
+//Update
+.put('/:commentId', (req, res, next) => {
+  Comment.findOneAndUpdate(
+      { _id: req.params.commentID }, 
+      req.body, 
+      { new: true }, 
+      (err, updatedComment) => {
+          if(err) {
+              res.status(500);
+              return next(err);
+          }
+          return res.status(201).send(updatedComment);
+      }
   )
 })
 

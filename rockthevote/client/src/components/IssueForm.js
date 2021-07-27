@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 
 const initInputs = {
   title: "",
-  description: "",
+  details: "",
   imgUrl: ""
 }
 
-export default function IssueForm(props){
+const IssueForm = (props) => {
   const [inputs, setInputs] = useState(initInputs)
-  const { addIssue } = props
+  const { createIssue } = props
 
-  function handleChange(e){
+  const handleChange = (e) => {
     const {name, value} = e.target
     setInputs(prevInputs => ({
       ...prevInputs,
@@ -18,36 +18,47 @@ export default function IssueForm(props){
     }))
   }
 
-  function handleSubmit(e){
+  const handleSubmit = (e) => {
     e.preventDefault()
-    addIssue(inputs)
+    createIssue(inputs)
     setInputs(initInputs)
   }
 
-  const { title, description, imgUrl } = inputs
+  const { title, imgUrl, details} = inputs
   return (
-    <div className = "auth-container">
+    <div className = "loginBox">
     <form onSubmit={handleSubmit}>
       <input 
         type="text" 
         name="title" 
         value={title} 
         onChange={handleChange} 
-        placeholder="Title"/>
+        placeholder="Topic"/>
+
+        <br/>
+
       <input 
         type="text" 
-        name="description" 
-        value={description} 
+        name="details" 
+        value={details} 
         onChange={handleChange} 
         placeholder="Description"/>
-      <input 
+
+        <br/>
+
+        <input 
         type="text" 
         name="imgUrl" 
         value={imgUrl} 
         onChange={handleChange} 
         placeholder="Image Url"/>
-      <button>Add Issue</button>
+
+        <br/>
+        <br/>
+      <button className="sform">Submit</button>
     </form>
     </div>
   )
 }
+
+export default IssueForm;

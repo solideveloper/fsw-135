@@ -1,29 +1,22 @@
 import React, { useContext } from "react";
-import IssueForm from "./IssueForm.js";
-import IssueList from "./IssueList.js";
 import { UserContext } from "../context/UserProvider.js";
 
 export default function Profile() {
   const {
     user: { username },
-    getUserIssues,
-    addIssue,
-    issueComments,
-    issues,
+    
+   
   } = useContext(UserContext);
 
   return (
     <div className="profile">
       <h1>Welcome @{username}</h1>
-      <h3>Post an issue</h3>
-      <IssueForm addIssue={addIssue} />
-      <div className="issues">
-        <IssueList
-          issues={issues}
-          getIssues={getUserIssues}
-          issueComments={issueComments}
-        />
-      </div>
+      <hr/>
+      <h3>This is your Profile Page</h3>
+      <img src="https://photographycourse.net/wp-content/uploads/2014/11/Landscape-Photography-steps.jpg" alt="landscapephoto"/>
+      <p>Click on your Public page to add new issues to the database.</p>
+      <p>Click on your Issues page to view all issues in database.</p>
+      
     </div>
   );
 }

@@ -6,7 +6,7 @@ const issueSchema = new Schema({
     type: String,
     required: true,
   },
-  description: {
+  details: {
     type: String,
   },
   completed: {
@@ -22,6 +22,36 @@ const issueSchema = new Schema({
     ref: "User",
     required: true,
   },
+  comment: {
+    type: String,
+    required: false,
+  },
+  upvotes: {
+    type: Number,
+    default: 0,
+  },
+  downvotes: {
+    type: Number,
+    default: 0,
+  },
+  usersVoted: [{
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"    
+    }
+  }]
 });
+
+/* Upvotes and Downvotes*/
+issueSchema.methods.addUpvote = function(){
+  const issue = this.toObject()
+  let upvotes = upvotes + 1
+  return upvotes
+}
+issueSchema.methods.addDownvote = function(){
+  const issue = this.toObject()
+  let downvotes = downvotes + 1
+  return downvotes
+}
 
 module.exports = mongoose.model("Issue", issueSchema);

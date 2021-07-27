@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import ProtectedRoute from './components/ProtectedRoute'
 import Public from './components/Public'
+import Issues from './components/MyIssues'
 import './style.css'
 
 
@@ -28,6 +29,12 @@ function App() {
         <ProtectedRoute 
           path="/public"
           component={Public}
+          redirectTo="/"
+          token={token}
+        />
+        <ProtectedRoute 
+          path="/myissues"
+          component={Issues}
           redirectTo="/"
           token={token}
         />
