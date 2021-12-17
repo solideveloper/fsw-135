@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Auth from './components/Auth'
 import { UserContext } from './context/UserProvider'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Routes, Route, Redirect } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -15,31 +15,31 @@ function App() {
   return (
     <div id='app'>
       <Navbar />
-      <Switch>
+      <Routes>
         <Route
           exact path='/'
           render={() => token ? <Redirect to='/profile' /> : <Auth />}
         />
         <ProtectedRoute
           path='/profile'
-          component={Profile}
+          element={<Profile/>}
           redirectTo="/"
           token={token}
         />
         <ProtectedRoute 
           path="/public"
-          component={Public}
+          element={<Public/>}
           redirectTo="/"
           token={token}
         />
         <ProtectedRoute 
           path="/myissues"
-          component={Issues}
+          element={<Issues/>}
           redirectTo="/"
           token={token}
         />
        
-      </Switch>
+      </Routes>
 
     </div>
   );

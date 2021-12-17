@@ -8,16 +8,12 @@ app.use(morgan("dev"));
 
 
 //Connect to MongoDB
-mongoose.connect(
-  "mongodb://localhost:27017/storedb",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  },
-  () => console.log("Connected to database")
-);
+main().catch(err => console.log(err));
+
+async function main() {
+    await mongoose.connect('mongodb://localhost:27017/inventory');
+    console.log("Connected to the DB")
+}
 
 // Routes //
 app.use("/inventory", require('./routes/storeRouter.js'))

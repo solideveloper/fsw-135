@@ -9,15 +9,12 @@ const morgan = require('morgan')
 app.use(express.json())
 app.use(morgan('dev'))
 
-mongoose.connect("mongodb://localhost:27017/rockthevote",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  },
-  () => console.log('Connected to the DB')
-);
+main().catch(err => console.log(err));
+
+async function main() {
+    await mongoose.connect('mongodb://localhost:27017/rockthevote');
+    console.log("Connected to the DB")
+}
 
 //Routes
 app.use("/api", expressJwt({ secret: process.env.SECRET, algorithms: ['HS256']}))
